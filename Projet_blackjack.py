@@ -289,5 +289,5 @@ def perdu(scorej1,scorebanque):
           print("la banque et le joueur ont bust")
 perdu(scorej1,scorebanque)
 #cas d'égalité
-if scorebanque==scorej1:
+if scorebanque==scorej1 and scorej1<=21 and scorebanque<=21:
      print("Push, le joueur récupère rien et ne perd rien")
