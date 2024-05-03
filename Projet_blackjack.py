@@ -1,39 +1,28 @@
 # PROJET BLACK JACK
 import random
-import tkinter as tk
-import numpy as np
-import PIL as pil
-from PIL import Image
-from PIL import ImageTk 
-from tkinter import filedialog
-from tkinter import simpledialog
 
 
-def save(matPix, filename):
-    Image.fromarray(matPix).save(filename)
-
-def load(filename):
-    return np.array(pil.Image.open(filename))
-
-### essai la partie graphique avec Tkinter
-plateau = tk.Tk()
-label = tk.Label(plateau)
-label.grid()
-canvas = tk.Canvas(plateau, width=300, height=300, bg='green')
-canvas.grid(column=1, row=0, rowspan=2)
-plateau.mainloop()
 ### but du jeu obtenir un score supérieur a la banque sans dépasser 21
-j1=[]
-b=[]
-pack=["As",2,3,4,5,6,7,8,9,10,"roi","dame","valet"]
+j1=[]# packet du joueur
+b=[] # packet de la banque
+pack=["As",2,3,4,5,6,7,8,9,10,"roi","dame","valet"] #packet de carte
+miseJ=int(input("combien voulez vous miser"))#mise du joueur
+miseJ2=0
+miseV2=0
+miseV3=0
+#distribution de carte aléatoirement au joueur et à la banque
 for k in range(2):
-    valeur_ajoutee = random.choice(pack)  # Choix aléatoire d'une valeur du premier tableau
+    valeur_ajoutee = random.choice(pack)  # Choix aléatoire d'une valeur
     j1.append(valeur_ajoutee)
 for k in range(1):
     vj=random.choice(pack)
     b.append(vj)
+
+#score de la banque et du joueur
 scorej1=0
 scorebanque=0       
+
+#calcul du score après distribution
 for n in j1:
     if n == "valet" or n == "roi" or n == "dame":
         scorej1 += 10
@@ -60,9 +49,11 @@ for n in b:
 
 print(j1,"joueur1 a ",scorej1,"point")
 print(b,"Banque a ",scorebanque,"point")
+
+#ajoute une carte caché à la banque
 carte=random.choice(pack)    
 b.append(carte)
-
+# ajoute des cartes à la banque tant que le score n'a pas atteint 17 ou plus
 while scorebanque<17:
     cart=random.choice(pack)
     b.append(cart)
@@ -75,9 +66,8 @@ while scorebanque<17:
             scorebanque += 1
     else:
         scorebanque += cart
-# piocher une carte
 
-    
+# si le joueur n'a pas fait un blackjack ou n'a pas atteint un score au dessus de 21 il tire une carte s'il le veut    
 if scorej1<21:
     m=str(input("joueur 1 voulez-vous tirez une carte? "))
     if m=="oui" or m=="OUI" or m=="Oui":
@@ -95,17 +85,20 @@ if scorej1<21:
         else:
                 scorej1 += wx
         print(j1,"joueur1 a ",scorej1,"point")       
+
+# si le joueur a deux meme carte (exemple: [8,8]) il peut choisir de deviser son pack en deux mains 
 sco1=0
 sco1b=0    
-if j1[0]==j1[1]:
-         choix=str(input("voulez vous diviser"))
+if j1[0]==j1[1] and len(j1)==2:
+         choix=str(input("voulez vous split votre packet"))
+         miseJ2=miseJ
          if choix=="oui" or choix== "OUI"  or choix=="Oui":
             c=j1[1]
             tab1=[]
             tab1.append(c)
             tab3=[]
             tab3.append(c)
-            print("le packet du joueur 1 a été séparer",tab3,tab1)
+            print("le packet du joueur 1 a été séparer",tab3,tab1,"mise packet 1:",miseJ,"mise packet 2:",miseJ2)
             abc=0
             pi=str(input("voulez vous piocher pour le premier paquet"))
             if pi=="oui" or pi=="OUI" or pi=="Oui":
@@ -182,7 +175,7 @@ if j1[0]==j1[1]:
                 abc=0
                 if c=="roi" or c=="dame" or c=="valet":
                   abc=10
-                  if bakaa == "valet" or bakaa == "roi" or bakaa == "dame": #essai de voir si tu peux pas mettre ça dans les if c==.... genre tu fais les baka dans les if c== comme ça ça peut marcher
+                  if bakaa == "valet" or bakaa == "roi" or bakaa == "dame":
                     sco1b += 10+abc
                   elif bakaa == "As":
                     if abc + 11 <= 21:
@@ -237,49 +230,64 @@ if j1[0]==j1[1]:
                     else:
                         sco1b+=bakaa
                     print("le deuxieme paquet du joueur 1",tab3,sco1b)
+            #compare les scores pour savoir qui a gagné        
             if sco1>21:
                 print("la premiere main du joueur 1 a perdu")
             elif sco1==21:
-                print("la premiere main du joueur 1 a gagné ")
+                miseV3=miseJ*2.5
+                print("la premiere main du joueur 1 a fait un blackjack sa mise gagné est",miseV3)
             if sco1b>21:
-                print("la deuxieme main de joueur 1 a perdu")
-            elif sco1==21:
+                print("la deuxieme main de joueur 1 a perdu donc cette main perd sa mise")
+            elif sco1b==21:
+                miseV4=miseJ2*2.5
                 print("la deuxieme main du joueur 1 a gagné")
             if scorebanque>sco1:
-                 print("la banque a gagné sur la premiere main")
+                 print("la banque a gagné sur la premiere main la premiere mise est perdu")
             if scorebanque<sco1:
-                 print("la premiere main a gagné")
+                 print("la premiere main a gagné et joueur gagne sa mise",miseJ)
             if scorebanque>sco1b:
-                 print("la banque a gagné sur la deuxieme main")
+                 print("la banque a gagné sur la deuxieme main et le joueur perd sa mise")
             if scorebanque<sco1b:
-                 print("la deuxieme main a gagné a gagné")
+                 print("la deuxieme main a gagné a gagné et le joueur gagne sa mise",miseJ2)
             if scorebanque==sco1b:
-                 print("égalité")
+                 print("PUSH")
             if scorebanque==sco1:
-                 print("égalité")
+                 print("PUSH")
 print(b,"le score de la banque est",scorebanque)    
-                    
-if scorebanque<=21 and scorej1<=21 and j1[0]!=j1[1]:
+#compare les scores pour savoir qui a gagné                    
+if scorebanque<=21 :
                 if scorebanque>scorej1:
-                    print("la banque a gagner")
-                if scorebanque<scorej1:
-                    print("le joueur a gagné")
-
+                    print("la banque a gagner, et le joueur perd sa mise")
+if scorej1<=21: 
+     if scorebanque<scorej1:
+                    print("le joueur a gagné, le joueur gagne sa mise",miseJ)
+     if scorebanque>21:
+          print("le joueur a gagné, le joueur gagne sa mise car la banque a BUST",miseJ)
+#cas ou le joueur fait un blackjack ou la banque
 def blackjack(sco1,sco1b,scorebanque,scorej1):
     if sco1==21:
-        print("la premiere main a fait un blackjack")
+        miseV2=miseJ*2.5
+        print("la premiere main a fait un blackjack",miseV2)
     if sco1b==21:
-        print("la deuxieme main a fait un blackjack")
+        #miseJ2=*2.5
+        print("la deuxieme main a fait un blackjack",miseJ2)
     if scorebanque==21:
         print("la banque a fait un blackjack")
     if scorej1==21:
         print("le joueur a fait un blackjack")
+        miseV2=miseJ*2.5
+        print("le joueur gagne 2.5 fois sa mise","mise gagné:",miseV2)
 print(blackjack(sco1,sco1b,scorebanque,scorej1))
+
+#cas ou le joueur ou la banque a perdu
 def perdu(scorej1,scorebanque):
      if scorej1>21:
-          print("joueur 1 perdu")
+          print("joueur 1 a bust donc il perd sa mise")
      if scorebanque>21:
           print("banque perdu")
+     if scorej1>21 and scorebanque>21:
+          print("la banque et le joueur ont bust")
 perdu(scorej1,scorebanque)
+#cas d'égalité
 if scorebanque==scorej1:
-     print("égalité")
+     print("Push, le joueur récupère rien et ne perd rien")
